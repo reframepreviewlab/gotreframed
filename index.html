@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reframe — Infrastructure for Intelligence</title>
+  <meta name="description" content="Reframe is the AI operating layer built for teams that ship. Scroll to discover the Core." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <!-- PRELOADER -->
+  <div id="preloader">
+    <div class="preloader-inner">
+      <svg class="preloader-logo" viewBox="0 0 40 40" fill="none">
+        <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
+        <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+        <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+        <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
+      </svg>
+      <div class="preloader-bar-wrap">
+        <div class="preloader-bar" id="preloaderBar"></div>
+      </div>
+      <span class="preloader-pct" id="preloaderPct">0%</span>
+      <span class="preloader-label">Loading Core Assets</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="site-nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <svg viewBox="0 0 40 40" fill="none" width="28" height="28">
+          <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
+          <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+          <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+          <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
+        </svg>
+        <span>Reframe</span>
+      </a>
+      <div class="nav-links">
+        <a href="#stack">Stack</a>
+        <a href="#core">Core</a>
+        <a href="#contact" class="nav-cta">Get Access</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- SECTION 1: INTRO HERO -->
+  <section id="hero" class="section-hero">
+    <div class="hero-bg-layer" id="heroBgLayer">
+      <canvas id="noiseCanvas"></canvas>
+      <div class="mesh-overlay"></div>
+      <div class="grid-overlay"></div>
+    </div>
+
+    <!-- Floating shapes -->
+    <div class="shapes-field" id="shapesField">
+      <div class="shape shape-1" data-depth="0.2"></div>
+      <div class="shape shape-2" data-depth="0.4"></div>
+      <div class="shape shape-3" data-depth="0.15"></div>
+      <div class="shape shape-4" data-depth="0.3"></div>
+      <div class="shape shape-5" data-depth="0.5"></div>
+      <div class="shape shape-6" data-depth="0.25"></div>
+      <div class="shape shape-7" data-depth="0.35"></div>
+      <div class="shape shape-8" data-depth="0.45"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="dot"></span>
+        <span>Infrastructure · Intelligence · Flow</span>
+      </div>
+      <h1 class="hero-headline">
+        <span class="line">The AI layer your</span>
+        <span class="line accent">team actually ships with.</span>
+      </h1>
+      <p class="hero-sub">Reframe is the operating core for intelligent products — scroll to see it reveal itself.</p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn-primary">Request Access</a>
+        <a href="#stack" class="btn-ghost">Explore the Stack ↓</a>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric"><span class="num">10×</span><span>Faster deployment</span></div>
+        <div class="metric"><span class="num">99.9%</span><span>Uptime SLA</span></div>
+        <div class="metric"><span class="num">0</span><span>Vendor lock-in</span></div>
+      </div>
+    </div>
+
+    <div class="scroll-cue">
+      <div class="scroll-cue-line"></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- SECTION 2: STICKY STACK -->
+  <section id="stack" class="section-stack">
+    <div class="stack-sticky-wrapper">
+      <div class="stack-display" id="stackDisplay">
+        <!-- Stack cards rendered by JS -->
+        <div class="stack-card" id="stackCard0" data-layer="0">
+          <div class="card-chrome">
+            <div class="chrome-dots"><span></span><span></span><span></span></div>
+            <span class="chrome-title">reframe/terminal</span>
+          </div>
+          <div class="card-body terminal-body">
+            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">reframe init --core</span></div>
+            <div class="term-line out">✓ Core module initialized</div>
+            <div class="term-line out">✓ Intelligence layer loaded</div>
+            <div class="term-line out">✓ Pipeline connected</div>
+            <div class="term-line blink"><span class="term-prompt">$</span> <span class="cursor">█</span></div>
+          </div>
+        </div>
+
+        <div class="stack-card" id="stackCard1" data-layer="1">
+          <div class="card-chrome">
+            <div class="chrome-dots"><span></span><span></span><span></span></div>
+            <span class="chrome-title">reframe/pipeline</span>
+          </div>
+          <div class="card-body">
+            <div class="pipeline-vis">
+              <div class="pipe-node active">Ingest</div>
+              <div class="pipe-arrow">→</div>
+              <div class="pipe-node">Process</div>
+              <div class="pipe-arrow">→</div>
+              <div class="pipe-node">Route</div>
+              <div class="pipe-arrow">→</div>
+              <div class="pipe-node">Emit</div>
+            </div>
+            <div class="pipe-stats">
+              <div class="pstat"><span class="pstat-val">2.3ms</span><span>Avg latency</span></div>
+              <div class="pstat"><span class="pstat-val">14k/s</span><span>Events</span></div>
+              <div class="pstat"><span class="pstat-val">100%</span><span>Delivery</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack-card" id="stackCard2" data-layer="2">
+          <div class="card-chrome">
+            <div class="chrome-dots"><span></span><span></span><span></span></div>
+            <span class="chrome-title">reframe/context</span>
+          </div>
+          <div class="card-body">
+            <div class="context-grid">
+              <div class="ctx-block accent-block">Memory</div>
+              <div class="ctx-block">Retrieval</div>
+              <div class="ctx-block">Grounding</div>
+              <div class="ctx-block accent-block">Synthesis</div>
+            </div>
+            <p class="card-copy">Persistent context across sessions, models, and agents — without bloating your token budget.</p>
+          </div>
+        </div>
+
+        <div class="stack-card" id="stackCard3" data-layer="3">
+          <div class="card-chrome">
+            <div class="chrome-dots"><span></span><span></span><span></span></div>
+            <span class="chrome-title">reframe/agents</span>
+          </div>
+          <div class="card-body">
+            <div class="agent-grid">
+              <div class="agent-dot" style="--hue:260"></div>
+              <div class="agent-dot" style="--hue:280"></div>
+              <div class="agent-dot" style="--hue:240"></div>
+              <div class="agent-dot" style="--hue:300"></div>
+              <div class="agent-dot" style="--hue:220"></div>
+              <div class="agent-dot" style="--hue:270"></div>
+            </div>
+            <p class="card-copy">Orchestrate multi-agent workflows with built-in error recovery, observability, and human-in-the-loop gates.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="stack-copy-scroll" id="stackCopyScroll">
+        <div class="stack-step" data-step="0">
+          <div class="step-num">01</div>
+          <h2>The Foundation</h2>
+          <p>Every great product needs a stable base. Reframe Terminal is your command center — initialize, monitor, and orchestrate from a single interface.</p>
+        </div>
+        <div class="stack-step" data-step="1">
+          <div class="step-num">02</div>
+          <h2>Intelligent Pipelines</h2>
+          <p>Route data and events through composable, AI-aware pipelines. Sub-3ms latency, 14,000 events per second, zero dropped messages.</p>
+        </div>
+        <div class="stack-step" data-step="2">
+          <div class="step-num">03</div>
+          <h2>Context That Persists</h2>
+          <p>Models forget. Reframe doesn't. Our context layer maintains memory across sessions, agents, and models — efficiently and affordably.</p>
+        </div>
+        <div class="stack-step" data-step="3">
+          <div class="step-num">04</div>
+          <h2>Agent Orchestration</h2>
+          <p>Six agents working in parallel. One coherent product. Reframe handles routing, retries, escalation, and auditability out of the box.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: PARALLAX CORRIDOR -->
+  <section id="corridor" class="section-corridor">
+    <div class="corridor-layer layer-far" id="layerFar"></div>
+    <div class="corridor-layer layer-mid" id="layerMid"></div>
+    <div class="corridor-layer layer-near" id="layerNear"></div>
+    <div class="corridor-content">
+      <div class="corridor-text">
+        <span class="corridor-tag">The Architecture</span>
+        <h2>Built for depth.<br/>Designed for speed.</h2>
+        <p>Three layers. Infinite scale. Every component modular, every interface versioned, every failure gracefully handled.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: CANVAS SEQUENCE -->
+  <section id="core" class="section-sequence">
+    <div class="sequence-sticky">
+      <canvas id="sequenceCanvas"></canvas>
+      <div class="sequence-overlay">
+        <div class="seq-label" id="seqLabel">
+          <span class="seq-tag">Core Reveal</span>
+          <h2 id="seqHeadline">Emerging from the noise</h2>
+          <p id="seqSub">Watch Reframe Core crystallize from raw signal into form.</p>
+        </div>
+        <div class="seq-progress-wrap">
+          <div class="seq-progress-bar" id="seqProgressBar"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 5: THREE.JS -->
+  <section id="three-section" class="section-three">
+    <div class="three-wrapper" id="threeWrapper">
+      <canvas id="threeCanvas"></canvas>
+    </div>
+    <div class="three-content">
+      <div class="three-copy">
+        <span class="section-tag">The Core Object</span>
+        <h2>Stable. Precise.<br/>Always on.</h2>
+        <p>Reframe Core is a persistent, versioned, model-agnostic intelligence object — your product's cognitive backbone.</p>
+        <ul class="feature-list">
+          <li><span class="feat-icon">◆</span> Model-agnostic routing</li>
+          <li><span class="feat-icon">◆</span> Stateful context windows</li>
+          <li><span class="feat-icon">◆</span> Real-time observability</li>
+          <li><span class="feat-icon">◆</span> Compliance-ready audit logs</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 6: CTA + CONTACT -->
+  <section id="contact" class="section-cta">
+    <div class="cta-inner">
+      <div class="cta-glow"></div>
+      <span class="section-tag">Early Access</span>
+      <h2>Ready to ship with<br/><span class="accent">intelligence built in?</span></h2>
+      <p>Join the private beta. No waitlist theatre — we review every application personally.</p>
+      <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Your name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Work email</label>
+            <input type="email" id="email" name="email" placeholder="you@company.com" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="company">Company & role</label>
+          <input type="text" id="company" name="company" placeholder="Acme Inc — Head of Product" />
+        </div>
+        <div class="form-group">
+          <label for="message">What are you building?</label>
+          <textarea id="message" name="message" rows="3" placeholder="Describe your use case in a few sentences..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary btn-submit">Request Access →</button>
+        <div id="formStatus" class="form-status"></div>
+      </form>
+    </div>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-left">
+          <a href="#" class="nav-logo">
+            <svg viewBox="0 0 40 40" fill="none" width="22" height="22">
+              <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
+              <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+              <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+              <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
+            </svg>
+            <span>Reframe</span>
+          </a>
+          <span class="footer-copy">© 2025 Reframe. All rights reserved.</span>
+        </div>
+        <div class="footer-right">
+          <span>Designed by <a href="https://www.getreframe.co.za" target="_blank" rel="noopener">Reframe</a></span>
+        </div>
+      </div>
+    </footer>
+  </section>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
