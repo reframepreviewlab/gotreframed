@@ -459,7 +459,7 @@ window.addEventListener('load', function() {
 gsap.registerPlugin(ScrollTrigger);
 
 var el=document.getElementById('preloader');
-if(el) el.classList.add('gone');
+if(el) el.parentNode.removeChild(el);
 
 ScrollTrigger.refresh();
 
