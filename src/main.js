@@ -83,7 +83,7 @@ function initContactForm() {
         headers: { Accept: 'application/json' }
       })
       if (res.ok) {
-        status.textContent = '✓ Received! We'll be in touch shortly.'
+        status.textContent = "✓ Received! We'll be in touch shortly."
         form.reset()
       } else {
         status.textContent = 'Something went wrong. Email us directly at hello@getreframe.co.za'
