@@ -626,7 +626,7 @@ gsap.from('.cor-txt',{opacity:0,y:50,scrollTrigger:{trigger:'#corridor',start:'t
       if(loaded===indices.length){setTimeout(hidePre,200);ScrollTrigger.refresh();}
     };
     // Try to load from relative path — works both locally and on GH Pages
-    img.src='seq/frame_'+String(frameNum).padStart(4,'0')+'.webp';
+    img.src='public/seq/frame_'+String(frameNum).padStart(4,'0')+'.webp';
   }
 
   resize();
