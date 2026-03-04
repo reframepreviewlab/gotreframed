@@ -1,305 +1,751 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reframe — Infrastructure for Intelligence</title>
-  <meta name="description" content="Reframe is the AI operating layer built for teams that ship. Scroll to discover the Core." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Reframe — Infrastructure for Intelligence</title>
+<meta name="description" content="Reframe is the AI operating layer built for teams that ship."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0B0D10;--bg2:#0F1116;--bg3:#13161C;
+  --accent:#5A52D6;--accent-dim:rgba(90,82,214,.35);
+  --text:#E8EAED;--dim:#7A8090;--muted:#3D4250;
+  --border:rgba(255,255,255,.07);--border-a:rgba(90,82,214,.4);
+  --font:'Inter',sans-serif;--mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;line-height:1.6}
+a{text-decoration:none;color:inherit}
+
+/* PRELOADER */
+#preloader{position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .7s ease,visibility .7s ease}
+#preloader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.pre-inner{display:flex;flex-direction:column;align-items:center;gap:20px}
+.pre-logo{width:48px;height:48px;animation:pulseLogo 1.5s ease-in-out infinite}
+@keyframes pulseLogo{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.95)}}
+.pre-track{width:200px;height:2px;background:var(--border);border-radius:2px;overflow:hidden}
+.pre-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#8B7FFF);transition:width .25s ease}
+.pre-pct{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+.pre-lbl{font-size:11px;color:var(--dim);letter-spacing:.15em;text-transform:uppercase}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 32px;background:rgba(11,13,16,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px}
+.nav-links{display:flex;align-items:center;gap:28px}
+.nav-links a{font-size:13px;color:var(--dim);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{padding:8px 18px!important;background:var(--accent)!important;border-radius:6px;color:#fff!important;font-weight:500;transition:background .2s,box-shadow .2s!important}
+.nav-cta:hover{background:#6B63E8!important;box-shadow:0 0 20px rgba(90,82,214,.4)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;padding:14px 28px;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;border:none}
+.btn-p{background:var(--accent);color:#fff}
+.btn-p:hover{background:#6B63E8;box-shadow:0 0 30px rgba(90,82,214,.45);transform:translateY(-1px)}
+.btn-g{border:1px solid var(--border);color:var(--dim);background:transparent}
+.btn-g:hover{border-color:var(--accent-dim);color:var(--text)}
+
+/* HERO */
+#hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:120px 32px 80px}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.mesh{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 30%,rgba(90,82,214,.18) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 70%,rgba(90,82,214,.1) 0%,transparent 60%),linear-gradient(180deg,#0B0D10 0%,#0D0F14 100%)}
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(90,82,214,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(90,82,214,.07) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 50%,black 0%,transparent 70%)}
+.shapes{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sh{position:absolute;border-radius:50%}
+.sh1{width:120px;height:120px;top:15%;left:8%;background:radial-gradient(circle at 35% 35%,rgba(90,82,214,.5),rgba(90,82,214,.05));filter:blur(1px)}
+.sh2{width:60px;height:60px;top:25%;right:12%;background:radial-gradient(circle at 40% 40%,rgba(139,127,255,.6),transparent);filter:blur(.5px)}
+.sh3{width:200px;height:200px;bottom:20%;left:5%;background:radial-gradient(circle at 40% 30%,rgba(90,82,214,.2),transparent 60%);filter:blur(2px)}
+.sh4{width:80px;height:80px;top:40%;right:20%;background:rgba(90,82,214,.25);border-radius:30% 70% 70% 30%/30% 30% 70% 70%}
+.sh5{width:40px;height:40px;top:60%;left:20%;background:rgba(90,82,214,.5);border-radius:4px;transform:rotate(45deg)}
+.sh6{width:160px;height:160px;top:10%;right:30%;background:radial-gradient(circle,rgba(90,82,214,.1),transparent 70%);border:1px solid rgba(90,82,214,.2)}
+.sh7{width:50px;height:50px;bottom:30%;right:8%;background:linear-gradient(135deg,rgba(90,82,214,.5),rgba(90,82,214,.1));border-radius:8px;transform:rotate(22deg)}
+.sh8{width:90px;height:90px;bottom:15%;right:35%;background:radial-gradient(circle at 60% 40%,rgba(90,82,214,.3),transparent);filter:blur(1px)}
+
+.hero-content{position:relative;z-index:2;max-width:760px;text-align:center}
+.tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid var(--border-a);border-radius:20px;font-size:11px;font-family:var(--mono);color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:32px}
+.tag .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+h1{font-size:clamp(40px,6vw,76px);font-weight:700;line-height:1.1;letter-spacing:-.03em;margin-bottom:24px}
+h1 .line{display:block}
+h1 .ac{color:var(--accent)}
+.hero-sub{font-size:18px;color:var(--dim);line-height:1.7;max-width:520px;margin:0 auto 40px}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:60px}
+.metrics{display:flex;justify-content:center;gap:48px;flex-wrap:wrap}
+.metric{display:flex;flex-direction:column;align-items:center;gap:4px}
+.metric .num{font-size:28px;font-weight:700;color:var(--accent);letter-spacing:-.02em}
+.metric .lbl{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.scroll-cue{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--muted);font-size:11px;letter-spacing:.15em;text-transform:uppercase;animation:floatCue 2s ease-in-out infinite;z-index:2}
+.scroll-line{width:1px;height:32px;background:linear-gradient(180deg,var(--accent),transparent)}
+@keyframes floatCue{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+
+/* STACK */
+#stack{position:relative;background:var(--bg)}
+.stack-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:400vh}
+.stack-left{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
+.card{position:absolute;width:min(420px,calc(100% - 80px));background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s,border-color .5s,box-shadow .5s}
+/* Default layered positions — always visible */
+.card[data-l="0"]{transform:translateY(54px) scale(.93);opacity:.3;z-index:1}
+.card[data-l="1"]{transform:translateY(36px) scale(.96);opacity:.5;z-index:2}
+.card[data-l="2"]{transform:translateY(18px) scale(.98);opacity:.7;z-index:3}
+.card[data-l="3"]{transform:translateY(0) scale(1);opacity:1;z-index:4}
+.card.active{transform:translateY(0) scale(1)!important;opacity:1!important;z-index:10!important;border-color:var(--border-a)!important;box-shadow:0 0 40px rgba(90,82,214,.25),0 20px 60px rgba(0,0,0,.5)!important}
+.chrome{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.dots{display:flex;gap:6px}
+.dots span{width:10px;height:10px;border-radius:50%}
+.dots span:nth-child(1){background:#FF5F57}
+.dots span:nth-child(2){background:#FEBC2E}
+.dots span:nth-child(3){background:#28C840}
+.wtitle{font-family:var(--mono);font-size:11px;color:var(--dim);margin-left:4px}
+.cbody{padding:20px;min-height:150px}
+
+/* Terminal */
+.term{font-family:var(--mono);font-size:12px;line-height:2}
+.tline{color:var(--dim)}
+.tline.out{color:var(--accent);padding-left:16px}
+.prompt{color:var(--accent)}
+.tcmd{color:var(--text)}
+.cursor{display:inline-block;animation:cur 1s step-end infinite;color:var(--accent)}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Pipeline */
+.pipe-row{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.pnode{flex:1;text-align:center;padding:8px 4px;border:1px solid var(--border);border-radius:6px;font-size:11px;font-family:var(--mono);color:var(--dim);background:var(--bg2);transition:all .4s;min-width:55px}
+.pnode.on{border-color:var(--accent);color:var(--accent);background:rgba(90,82,214,.1)}
+.parr{color:var(--muted);font-size:12px}
+.pstats{display:flex;gap:16px}
+.ps{display:flex;flex-direction:column;gap:2px}
+.psv{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--text)}
+.psl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+
+/* Context */
+.ctx-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.ctx-b{padding:12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:var(--mono);color:var(--dim);text-align:center;background:var(--bg2)}
+.ctx-b.hi{border-color:var(--border-a);color:var(--accent);background:rgba(90,82,214,.08)}
+.small{font-size:13px;color:var(--dim);line-height:1.6}
+
+/* Agents */
+.agents{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.agent{width:36px;height:36px;border-radius:10px;animation:agPulse 3s ease-in-out infinite}
+.agent:nth-child(1){background:radial-gradient(circle at 35% 35%,hsl(260,70%,65%),hsl(260,60%,30%));animation-delay:0ms}
+.agent:nth-child(2){background:radial-gradient(circle at 35% 35%,hsl(280,70%,65%),hsl(280,60%,30%));animation-delay:150ms}
+.agent:nth-child(3){background:radial-gradient(circle at 35% 35%,hsl(240,70%,65%),hsl(240,60%,30%));animation-delay:300ms}
+.agent:nth-child(4){background:radial-gradient(circle at 35% 35%,hsl(300,70%,65%),hsl(300,60%,30%));animation-delay:450ms}
+.agent:nth-child(5){background:radial-gradient(circle at 35% 35%,hsl(220,70%,65%),hsl(220,60%,30%));animation-delay:600ms}
+.agent:nth-child(6){background:radial-gradient(circle at 35% 35%,hsl(270,70%,65%),hsl(270,60%,30%));animation-delay:750ms}
+@keyframes agPulse{0%,100%{box-shadow:0 0 8px rgba(90,82,214,.3)}50%{box-shadow:0 0 20px rgba(90,82,214,.6)}}
+
+.stack-right{padding:0 60px 0 40px;display:flex;flex-direction:column}
+.step{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 0;opacity:.2;transition:opacity .5s}
+.step.on{opacity:1}
+.step-n{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.15em;margin-bottom:16px}
+.step h2{font-size:clamp(28px,4vw,48px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:20px}
+.step p{font-size:16px;color:var(--dim);line-height:1.7;max-width:380px}
+
+/* CORRIDOR */
+#corridor{position:relative;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cl{position:absolute;inset:-80px;will-change:transform}
+.cl-far{background:radial-gradient(ellipse 100% 50% at 50% 50%,rgba(90,82,214,.08) 0%,transparent 60%),repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(90,82,214,.06) 60px),repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(90,82,214,.06) 60px);background-color:var(--bg)}
+.cl-mid{background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(90,82,214,.05) 0%,transparent 70%)}
+.cl-near{background:linear-gradient(180deg,var(--bg) 0%,transparent 30%,transparent 70%,var(--bg) 100%)}
+.cor-txt{position:relative;z-index:5;text-align:center;padding:32px}
+.stag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.2em;text-transform:uppercase;display:block;margin-bottom:20px}
+.cor-txt h2{font-size:clamp(32px,5vw,64px);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:20px}
+.cor-txt p{font-size:16px;color:var(--dim);line-height:1.7;max-width:480px;margin:0 auto}
+
+/* SEQUENCE */
+#core-seq{background:var(--bg);position:relative}
+.seq-sticky{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#seqCanvas{position:absolute;inset:0;width:100%;height:100%}
+.seq-ui{position:relative;z-index:5;width:100%;padding:40px;display:flex;flex-direction:column;height:100%;justify-content:flex-end;pointer-events:none}
+.seq-info{margin-bottom:20px}
+.seq-info .stag{margin-bottom:12px}
+#seqH{font-size:clamp(22px,3.5vw,42px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;transition:opacity .3s}
+#seqS{font-size:15px;color:var(--dim);transition:opacity .3s}
+.seq-track{height:2px;background:var(--border);border-radius:2px;overflow:hidden;width:200px;margin-top:16px}
+.seq-prog{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#8B7FFF)}
+
+/* THREE */
+#three-sec{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--bg)}
+#three-wrap{position:absolute;inset:0}
+#threeCanvas{width:100%;height:100%;display:block}
+.three-content{position:relative;z-index:2;width:100%;max-width:1200px;margin:0 auto;padding:80px 32px;display:flex;justify-content:flex-end}
+.three-panel{max-width:420px;background:rgba(11,13,16,.65);backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:16px;padding:36px}
+.three-panel h2{font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:16px}
+.three-panel p{font-size:15px;color:var(--dim);line-height:1.7;margin-bottom:28px}
+.feats{list-style:none;display:flex;flex-direction:column;gap:12px}
+.feats li{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--dim)}
+.fi{color:var(--accent);font-size:10px}
+
+/* CTA */
+#contact{background:var(--bg);position:relative;overflow:hidden}
+.cta-wrap{max-width:680px;margin:0 auto;padding:120px 32px 80px;position:relative;text-align:center}
+.cta-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(90,82,214,.2) 0%,transparent 70%);pointer-events:none}
+.cta-wrap h2{font-size:clamp(32px,5vw,56px);font-weight:700;letter-spacing:-.02em;line-height:1.2;margin-bottom:16px}
+.cta-wrap h2 .ac{color:var(--accent)}
+.cta-wrap>p{font-size:16px;color:var(--dim);line-height:1.7;margin-bottom:52px}
+form{display:flex;flex-direction:column;gap:16px;text-align:left}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.fg{display:flex;flex-direction:column;gap:8px}
+.fg label{font-size:12px;font-weight:500;color:var(--dim);letter-spacing:.05em;text-transform:uppercase}
+.fg input,.fg textarea{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:14px;color:var(--text);font-family:var(--font);resize:vertical;outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
+.fg input:focus,.fg textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(90,82,214,.15)}
+.btn-sub{width:100%;justify-content:center;margin-top:4px}
+#fstatus{font-size:13px;color:var(--accent);min-height:20px;margin-top:8px}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:32px}
+.foot-in{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.foot-l{display:flex;align-items:center;gap:20px}
+.foot-copy{font-size:12px;color:var(--muted)}
+.foot-r{font-size:12px;color:var(--muted)}
+.foot-r a{color:var(--accent)}
+
+@media(max-width:768px){
+  .stack-wrap{grid-template-columns:1fr}
+  .stack-left{height:65vh;position:relative}
+  .stack-right{padding:20px 24px 80px}
+  .step{min-height:auto;padding:60px 0}
+  .frow{grid-template-columns:1fr}
+  .three-content{justify-content:center}
+  .three-panel{max-width:100%}
+  .nav-links a:not(.nav-cta){display:none}
+  .metrics{gap:20px}
+}
+</style>
 </head>
 <body>
 
-  <!-- PRELOADER -->
-  <div id="preloader">
-    <div class="preloader-inner">
-      <svg class="preloader-logo" viewBox="0 0 40 40" fill="none">
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pre-inner">
+    <svg class="pre-logo" viewBox="0 0 40 40" fill="none">
+      <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
+      <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
+      <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
+      <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
+    </svg>
+    <div class="pre-track"><div class="pre-bar" id="preBar"></div></div>
+    <span class="pre-pct" id="prePct">0%</span>
+    <span class="pre-lbl">Initializing Core</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-in">
+    <a href="#" class="nav-logo">
+      <svg viewBox="0 0 40 40" fill="none" width="26" height="26">
         <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
-        <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
-        <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
+        <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
+        <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
         <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
       </svg>
-      <div class="preloader-bar-wrap">
-        <div class="preloader-bar" id="preloaderBar"></div>
-      </div>
-      <span class="preloader-pct" id="preloaderPct">0%</span>
-      <span class="preloader-label">Loading Core Assets</span>
+      <span>Reframe</span>
+    </a>
+    <div class="nav-links">
+      <a href="#stack">Stack</a>
+      <a href="#core-seq">Core</a>
+      <a href="#contact" class="nav-cta">Get Access</a>
     </div>
   </div>
+</nav>
 
-  <!-- NAV -->
-  <nav id="site-nav">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <svg viewBox="0 0 40 40" fill="none" width="28" height="28">
-          <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
-          <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
-          <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
-          <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
-        </svg>
-        <span>Reframe</span>
-      </a>
-      <div class="nav-links">
-        <a href="#stack">Stack</a>
-        <a href="#core">Core</a>
-        <a href="#contact" class="nav-cta">Get Access</a>
-      </div>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg">
+    <div class="mesh"></div>
+    <div class="grid-bg"></div>
+  </div>
+  <div class="shapes">
+    <div class="sh sh1"></div><div class="sh sh2"></div><div class="sh sh3"></div>
+    <div class="sh sh4"></div><div class="sh sh5"></div><div class="sh sh6"></div>
+    <div class="sh sh7"></div><div class="sh sh8"></div>
+  </div>
+  <div class="hero-content">
+    <div class="tag"><span class="dot"></span>Infrastructure · Intelligence · Flow</div>
+    <h1>
+      <span class="line">The AI layer your</span>
+      <span class="line ac">team actually ships with.</span>
+    </h1>
+    <p class="hero-sub">Reframe is the operating core for intelligent products — scroll to see it reveal itself.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn btn-p">Request Access</a>
+      <a href="#stack" class="btn btn-g">Explore the Stack ↓</a>
     </div>
-  </nav>
-
-  <!-- SECTION 1: INTRO HERO -->
-  <section id="hero" class="section-hero">
-    <div class="hero-bg-layer" id="heroBgLayer">
-      <canvas id="noiseCanvas"></canvas>
-      <div class="mesh-overlay"></div>
-      <div class="grid-overlay"></div>
+    <div class="metrics">
+      <div class="metric"><span class="num">10×</span><span class="lbl">Faster deployment</span></div>
+      <div class="metric"><span class="num">99.9%</span><span class="lbl">Uptime SLA</span></div>
+      <div class="metric"><span class="num">0</span><span class="lbl">Vendor lock-in</span></div>
     </div>
+  </div>
+  <div class="scroll-cue"><div class="scroll-line"></div><span>Scroll</span></div>
+</section>
 
-    <!-- Floating shapes -->
-    <div class="shapes-field" id="shapesField">
-      <div class="shape shape-1" data-depth="0.2"></div>
-      <div class="shape shape-2" data-depth="0.4"></div>
-      <div class="shape shape-3" data-depth="0.15"></div>
-      <div class="shape shape-4" data-depth="0.3"></div>
-      <div class="shape shape-5" data-depth="0.5"></div>
-      <div class="shape shape-6" data-depth="0.25"></div>
-      <div class="shape shape-7" data-depth="0.35"></div>
-      <div class="shape shape-8" data-depth="0.45"></div>
-    </div>
-
-    <div class="hero-content">
-      <div class="hero-tag">
-        <span class="dot"></span>
-        <span>Infrastructure · Intelligence · Flow</span>
-      </div>
-      <h1 class="hero-headline">
-        <span class="line">The AI layer your</span>
-        <span class="line accent">team actually ships with.</span>
-      </h1>
-      <p class="hero-sub">Reframe is the operating core for intelligent products — scroll to see it reveal itself.</p>
-      <div class="hero-actions">
-        <a href="#contact" class="btn-primary">Request Access</a>
-        <a href="#stack" class="btn-ghost">Explore the Stack ↓</a>
-      </div>
-      <div class="hero-metrics">
-        <div class="metric"><span class="num">10×</span><span>Faster deployment</span></div>
-        <div class="metric"><span class="num">99.9%</span><span>Uptime SLA</span></div>
-        <div class="metric"><span class="num">0</span><span>Vendor lock-in</span></div>
-      </div>
-    </div>
-
-    <div class="scroll-cue">
-      <div class="scroll-cue-line"></div>
-      <span>Scroll</span>
-    </div>
-  </section>
-
-  <!-- SECTION 2: STICKY STACK -->
-  <section id="stack" class="section-stack">
-    <div class="stack-sticky-wrapper">
-      <div class="stack-display" id="stackDisplay">
-        <!-- Stack cards rendered by JS -->
-        <div class="stack-card" id="stackCard0" data-layer="0">
-          <div class="card-chrome">
-            <div class="chrome-dots"><span></span><span></span><span></span></div>
-            <span class="chrome-title">reframe/terminal</span>
-          </div>
-          <div class="card-body terminal-body">
-            <div class="term-line"><span class="term-prompt">$</span> <span class="term-cmd">reframe init --core</span></div>
-            <div class="term-line out">✓ Core module initialized</div>
-            <div class="term-line out">✓ Intelligence layer loaded</div>
-            <div class="term-line out">✓ Pipeline connected</div>
-            <div class="term-line blink"><span class="term-prompt">$</span> <span class="cursor">█</span></div>
-          </div>
+<!-- STACK -->
+<section id="stack">
+  <div class="stack-wrap">
+    <div class="stack-left" id="stackLeft">
+      <!-- Card 0: Terminal -->
+      <div class="card" data-l="0">
+        <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><span class="wtitle">reframe/terminal</span></div>
+        <div class="cbody term">
+          <div class="tline"><span class="prompt">$</span> <span class="tcmd">reframe init --core</span></div>
+          <div class="tline out">✓ Core module initialized</div>
+          <div class="tline out">✓ Intelligence layer loaded</div>
+          <div class="tline out">✓ Pipeline connected</div>
+          <div class="tline"><span class="prompt">$</span> <span class="cursor">█</span></div>
         </div>
-
-        <div class="stack-card" id="stackCard1" data-layer="1">
-          <div class="card-chrome">
-            <div class="chrome-dots"><span></span><span></span><span></span></div>
-            <span class="chrome-title">reframe/pipeline</span>
+      </div>
+      <!-- Card 1: Pipeline -->
+      <div class="card" data-l="1">
+        <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><span class="wtitle">reframe/pipeline</span></div>
+        <div class="cbody">
+          <div class="pipe-row">
+            <div class="pnode on">Ingest</div><div class="parr">→</div>
+            <div class="pnode">Process</div><div class="parr">→</div>
+            <div class="pnode">Route</div><div class="parr">→</div>
+            <div class="pnode">Emit</div>
           </div>
-          <div class="card-body">
-            <div class="pipeline-vis">
-              <div class="pipe-node active">Ingest</div>
-              <div class="pipe-arrow">→</div>
-              <div class="pipe-node">Process</div>
-              <div class="pipe-arrow">→</div>
-              <div class="pipe-node">Route</div>
-              <div class="pipe-arrow">→</div>
-              <div class="pipe-node">Emit</div>
-            </div>
-            <div class="pipe-stats">
-              <div class="pstat"><span class="pstat-val">2.3ms</span><span>Avg latency</span></div>
-              <div class="pstat"><span class="pstat-val">14k/s</span><span>Events</span></div>
-              <div class="pstat"><span class="pstat-val">100%</span><span>Delivery</span></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="stack-card" id="stackCard2" data-layer="2">
-          <div class="card-chrome">
-            <div class="chrome-dots"><span></span><span></span><span></span></div>
-            <span class="chrome-title">reframe/context</span>
-          </div>
-          <div class="card-body">
-            <div class="context-grid">
-              <div class="ctx-block accent-block">Memory</div>
-              <div class="ctx-block">Retrieval</div>
-              <div class="ctx-block">Grounding</div>
-              <div class="ctx-block accent-block">Synthesis</div>
-            </div>
-            <p class="card-copy">Persistent context across sessions, models, and agents — without bloating your token budget.</p>
-          </div>
-        </div>
-
-        <div class="stack-card" id="stackCard3" data-layer="3">
-          <div class="card-chrome">
-            <div class="chrome-dots"><span></span><span></span><span></span></div>
-            <span class="chrome-title">reframe/agents</span>
-          </div>
-          <div class="card-body">
-            <div class="agent-grid">
-              <div class="agent-dot" style="--hue:260"></div>
-              <div class="agent-dot" style="--hue:280"></div>
-              <div class="agent-dot" style="--hue:240"></div>
-              <div class="agent-dot" style="--hue:300"></div>
-              <div class="agent-dot" style="--hue:220"></div>
-              <div class="agent-dot" style="--hue:270"></div>
-            </div>
-            <p class="card-copy">Orchestrate multi-agent workflows with built-in error recovery, observability, and human-in-the-loop gates.</p>
+          <div class="pstats">
+            <div class="ps"><span class="psv">2.3ms</span><span class="psl">Avg latency</span></div>
+            <div class="ps"><span class="psv">14k/s</span><span class="psl">Events</span></div>
+            <div class="ps"><span class="psv">100%</span><span class="psl">Delivery</span></div>
           </div>
         </div>
       </div>
-
-      <div class="stack-copy-scroll" id="stackCopyScroll">
-        <div class="stack-step" data-step="0">
-          <div class="step-num">01</div>
-          <h2>The Foundation</h2>
-          <p>Every great product needs a stable base. Reframe Terminal is your command center — initialize, monitor, and orchestrate from a single interface.</p>
-        </div>
-        <div class="stack-step" data-step="1">
-          <div class="step-num">02</div>
-          <h2>Intelligent Pipelines</h2>
-          <p>Route data and events through composable, AI-aware pipelines. Sub-3ms latency, 14,000 events per second, zero dropped messages.</p>
-        </div>
-        <div class="stack-step" data-step="2">
-          <div class="step-num">03</div>
-          <h2>Context That Persists</h2>
-          <p>Models forget. Reframe doesn't. Our context layer maintains memory across sessions, agents, and models — efficiently and affordably.</p>
-        </div>
-        <div class="stack-step" data-step="3">
-          <div class="step-num">04</div>
-          <h2>Agent Orchestration</h2>
-          <p>Six agents working in parallel. One coherent product. Reframe handles routing, retries, escalation, and auditability out of the box.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 3: PARALLAX CORRIDOR -->
-  <section id="corridor" class="section-corridor">
-    <div class="corridor-layer layer-far" id="layerFar"></div>
-    <div class="corridor-layer layer-mid" id="layerMid"></div>
-    <div class="corridor-layer layer-near" id="layerNear"></div>
-    <div class="corridor-content">
-      <div class="corridor-text">
-        <span class="corridor-tag">The Architecture</span>
-        <h2>Built for depth.<br/>Designed for speed.</h2>
-        <p>Three layers. Infinite scale. Every component modular, every interface versioned, every failure gracefully handled.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 4: CANVAS SEQUENCE -->
-  <section id="core" class="section-sequence">
-    <div class="sequence-sticky">
-      <canvas id="sequenceCanvas"></canvas>
-      <div class="sequence-overlay">
-        <div class="seq-label" id="seqLabel">
-          <span class="seq-tag">Core Reveal</span>
-          <h2 id="seqHeadline">Emerging from the noise</h2>
-          <p id="seqSub">Watch Reframe Core crystallize from raw signal into form.</p>
-        </div>
-        <div class="seq-progress-wrap">
-          <div class="seq-progress-bar" id="seqProgressBar"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 5: THREE.JS -->
-  <section id="three-section" class="section-three">
-    <div class="three-wrapper" id="threeWrapper">
-      <canvas id="threeCanvas"></canvas>
-    </div>
-    <div class="three-content">
-      <div class="three-copy">
-        <span class="section-tag">The Core Object</span>
-        <h2>Stable. Precise.<br/>Always on.</h2>
-        <p>Reframe Core is a persistent, versioned, model-agnostic intelligence object — your product's cognitive backbone.</p>
-        <ul class="feature-list">
-          <li><span class="feat-icon">◆</span> Model-agnostic routing</li>
-          <li><span class="feat-icon">◆</span> Stateful context windows</li>
-          <li><span class="feat-icon">◆</span> Real-time observability</li>
-          <li><span class="feat-icon">◆</span> Compliance-ready audit logs</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <!-- SECTION 6: CTA + CONTACT -->
-  <section id="contact" class="section-cta">
-    <div class="cta-inner">
-      <div class="cta-glow"></div>
-      <span class="section-tag">Early Access</span>
-      <h2>Ready to ship with<br/><span class="accent">intelligence built in?</span></h2>
-      <p>Join the private beta. No waitlist theatre — we review every application personally.</p>
-      <form id="contactForm" class="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name" required />
+      <!-- Card 2: Context -->
+      <div class="card" data-l="2">
+        <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><span class="wtitle">reframe/context</span></div>
+        <div class="cbody">
+          <div class="ctx-grid">
+            <div class="ctx-b hi">Memory</div><div class="ctx-b">Retrieval</div>
+            <div class="ctx-b">Grounding</div><div class="ctx-b hi">Synthesis</div>
           </div>
-          <div class="form-group">
-            <label for="email">Work email</label>
-            <input type="email" id="email" name="email" placeholder="you@company.com" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="company">Company & role</label>
-          <input type="text" id="company" name="company" placeholder="Acme Inc — Head of Product" />
-        </div>
-        <div class="form-group">
-          <label for="message">What are you building?</label>
-          <textarea id="message" name="message" rows="3" placeholder="Describe your use case in a few sentences..."></textarea>
-        </div>
-        <button type="submit" class="btn-primary btn-submit">Request Access →</button>
-        <div id="formStatus" class="form-status"></div>
-      </form>
-    </div>
-
-    <footer class="site-footer">
-      <div class="footer-inner">
-        <div class="footer-left">
-          <a href="#" class="nav-logo">
-            <svg viewBox="0 0 40 40" fill="none" width="22" height="22">
-              <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
-              <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
-              <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity="0.5"/>
-              <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
-            </svg>
-            <span>Reframe</span>
-          </a>
-          <span class="footer-copy">© 2025 Reframe. All rights reserved.</span>
-        </div>
-        <div class="footer-right">
-          <span>Designed by <a href="https://www.getreframe.co.za" target="_blank" rel="noopener">Reframe</a></span>
+          <p class="small">Persistent context across sessions, models, and agents — without bloating your token budget.</p>
         </div>
       </div>
-    </footer>
-  </section>
+      <!-- Card 3: Agents -->
+      <div class="card" data-l="3">
+        <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><span class="wtitle">reframe/agents</span></div>
+        <div class="cbody">
+          <div class="agents">
+            <div class="agent"></div><div class="agent"></div><div class="agent"></div>
+            <div class="agent"></div><div class="agent"></div><div class="agent"></div>
+          </div>
+          <p class="small">Orchestrate multi-agent workflows with built-in error recovery, observability, and human-in-the-loop gates.</p>
+        </div>
+      </div>
+    </div>
+    <div class="stack-right">
+      <div class="step on" data-s="0">
+        <div class="step-n">01</div>
+        <h2>The Foundation</h2>
+        <p>Every great product needs a stable base. Reframe Terminal is your command center — initialize, monitor, and orchestrate from a single interface.</p>
+      </div>
+      <div class="step" data-s="1">
+        <div class="step-n">02</div>
+        <h2>Intelligent Pipelines</h2>
+        <p>Route data and events through composable, AI-aware pipelines. Sub-3ms latency, 14,000 events per second, zero dropped messages.</p>
+      </div>
+      <div class="step" data-s="2">
+        <div class="step-n">03</div>
+        <h2>Context That Persists</h2>
+        <p>Models forget. Reframe does not. Our context layer maintains memory across sessions, agents, and models — efficiently and affordably.</p>
+      </div>
+      <div class="step" data-s="3">
+        <div class="step-n">04</div>
+        <h2>Agent Orchestration</h2>
+        <p>Six agents working in parallel. One coherent product. Reframe handles routing, retries, escalation, and auditability out of the box.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script type="module" src="./src/main.js"></script>
+<!-- CORRIDOR -->
+<section id="corridor">
+  <div class="cl cl-far" id="clFar"></div>
+  <div class="cl cl-mid" id="clMid"></div>
+  <div class="cl cl-near" id="clNear"></div>
+  <div class="cor-txt">
+    <span class="stag">The Architecture</span>
+    <h2>Built for depth.<br>Designed for speed.</h2>
+    <p>Three layers. Infinite scale. Every component modular, every interface versioned, every failure gracefully handled.</p>
+  </div>
+</section>
+
+<!-- SEQUENCE -->
+<section id="core-seq" style="height:600vh">
+  <div class="seq-sticky">
+    <canvas id="seqCanvas"></canvas>
+    <div class="seq-ui">
+      <div class="seq-info">
+        <span class="stag">Core Reveal</span>
+        <div id="seqH">Emerging from the noise</div>
+        <div id="seqS">Watch Reframe Core crystallize from raw signal into form.</div>
+      </div>
+      <div class="seq-track"><div class="seq-prog" id="seqProg"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- THREE -->
+<section id="three-sec">
+  <div id="three-wrap"><canvas id="threeCanvas"></canvas></div>
+  <div class="three-content">
+    <div class="three-panel">
+      <span class="stag">The Core Object</span>
+      <h2>Stable. Precise.<br>Always on.</h2>
+      <p>Reframe Core is a persistent, versioned, model-agnostic intelligence object — your product's cognitive backbone.</p>
+      <ul class="feats">
+        <li><span class="fi">◆</span> Model-agnostic routing</li>
+        <li><span class="fi">◆</span> Stateful context windows</li>
+        <li><span class="fi">◆</span> Real-time observability</li>
+        <li><span class="fi">◆</span> Compliance-ready audit logs</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact">
+  <div class="cta-wrap">
+    <div class="cta-glow"></div>
+    <span class="stag">Early Access</span>
+    <h2>Ready to ship with<br><span class="ac">intelligence built in?</span></h2>
+    <p>Join the private beta. No waitlist theatre — we review every application personally.</p>
+    <form id="cform" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <div class="frow">
+        <div class="fg"><label>Name</label><input type="text" name="name" placeholder="Your name" required/></div>
+        <div class="fg"><label>Work email</label><input type="email" name="email" placeholder="you@company.com" required/></div>
+      </div>
+      <div class="fg"><label>Company & role</label><input type="text" name="company" placeholder="Acme Inc — Head of Product"/></div>
+      <div class="fg"><label>What are you building?</label><textarea name="message" rows="3" placeholder="Describe your use case..."></textarea></div>
+      <button type="submit" class="btn btn-p btn-sub">Request Access →</button>
+      <div id="fstatus"></div>
+    </form>
+  </div>
+  <footer>
+    <div class="foot-in">
+      <div class="foot-l">
+        <a href="#" class="nav-logo">
+          <svg viewBox="0 0 40 40" fill="none" width="22" height="22">
+            <rect x="4" y="4" width="14" height="14" rx="2" fill="#5A52D6"/>
+            <rect x="22" y="4" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
+            <rect x="4" y="22" width="14" height="14" rx="2" fill="#5A52D6" opacity=".5"/>
+            <rect x="22" y="22" width="14" height="14" rx="2" fill="#5A52D6"/>
+          </svg>
+          <span>Reframe</span>
+        </a>
+        <span class="foot-copy">© 2025 Reframe. All rights reserved.</span>
+      </div>
+      <div class="foot-r">Designed by <a href="https://www.getreframe.co.za" target="_blank" rel="noopener">Reframe</a></div>
+    </div>
+  </footer>
+</section>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ── Preloader ────────────────────────────────
+function setPre(p){
+  document.getElementById('preBar').style.width=Math.round(p*100)+'%';
+  document.getElementById('prePct').textContent=Math.round(p*100)+'%';
+}
+function hidePre(){
+  var el=document.getElementById('preloader');
+  if(!el||el.classList.contains('gone'))return;
+  el.classList.add('gone');
+}
+setTimeout(hidePre,4500);
+setPre(.05);
+
+// ── Hero ─────────────────────────────────────
+gsap.from('.tag',{opacity:0,y:20,duration:.8,delay:.3});
+gsap.from('h1 .line',{opacity:0,y:32,duration:.9,stagger:.13,delay:.5});
+gsap.from('.hero-sub',{opacity:0,y:20,duration:.8,delay:.75});
+gsap.from('.hero-btns',{opacity:0,y:20,duration:.7,delay:.95});
+gsap.from('.metric',{opacity:0,y:16,duration:.6,stagger:.1,delay:1.05});
+
+gsap.to('.hero-bg',{yPercent:25,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+gsap.to('.hero-content',{opacity:0,yPercent:-10,ease:'none',scrollTrigger:{trigger:'#hero',start:'60% top',end:'bottom top',scrub:true}});
+document.querySelectorAll('.sh').forEach(function(s,i){
+  gsap.to(s,{yPercent:-40-(i*5),ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+});
+
+// ── Stack ─────────────────────────────────────
+var cards=[...document.querySelectorAll('.card')];
+var steps=[...document.querySelectorAll('.step')];
+
+function activateStep(idx){
+  steps.forEach(function(s,i){s.classList.toggle('on',i===idx);});
+  cards.forEach(function(c){
+    var l=parseInt(c.getAttribute('data-l'));
+    var diff=l-idx;
+    var isOn=diff===0;
+    c.classList.toggle('active',isOn);
+    gsap.to(c,{
+      y:diff*20,
+      scale:isOn?1:1-Math.abs(diff)*.025,
+      opacity:isOn?1:Math.max(.15,.55-Math.abs(diff)*.15),
+      duration:.5,ease:'power2.out',overwrite:true
+    });
+  });
+}
+
+activateStep(0);
+
+ScrollTrigger.create({
+  trigger:'.stack-wrap',
+  start:'top top',
+  end:'bottom bottom',
+  onUpdate:function(self){
+    var idx=Math.min(Math.floor(self.progress*steps.length),steps.length-1);
+    activateStep(idx);
+  }
+});
+
+// Pipeline animation
+ScrollTrigger.create({
+  trigger:'.card[data-l="1"]',start:'top 70%',once:true,
+  onEnter:function(){
+    var nodes=document.querySelectorAll('.pnode');
+    nodes.forEach(function(n,i){
+      setTimeout(function(){
+        nodes.forEach(function(x){x.classList.remove('on');});
+        n.classList.add('on');
+      },i*600);
+    });
+  }
+});
+
+// ── Corridor ──────────────────────────────────
+gsap.to('#clFar',{yPercent:-12,ease:'none',scrollTrigger:{trigger:'#corridor',start:'top bottom',end:'bottom top',scrub:true}});
+gsap.to('#clMid',{yPercent:-28,ease:'none',scrollTrigger:{trigger:'#corridor',start:'top bottom',end:'bottom top',scrub:true}});
+gsap.to('#clNear',{yPercent:-50,ease:'none',scrollTrigger:{trigger:'#corridor',start:'top bottom',end:'bottom top',scrub:true}});
+gsap.from('.cor-txt',{opacity:0,y:50,scrollTrigger:{trigger:'#corridor',start:'top 70%',end:'top 30%',scrub:true}});
+
+// ── Sequence canvas ───────────────────────────
+(function(){
+  var canvas=document.getElementById('seqCanvas');
+  var ctx=canvas.getContext('2d');
+  var W,H,dpr;
+  var frames=[];
+  var TOTAL=160;
+  var step=window.innerWidth<768?2:1;
+  var indices=[];
+  for(var i=1;i<=TOTAL;i+=step)indices.push(i);
+  var loaded=0;
+  var currentIdx=0;
+
+  function resize(){
+    dpr=Math.min(window.devicePixelRatio||1,1.5);
+    W=canvas.clientWidth;H=canvas.clientHeight;
+    canvas.width=W*dpr;canvas.height=H*dpr;
+    ctx.scale(dpr,dpr);
+    draw(currentIdx);
+  }
+
+  function draw(idx){
+    currentIdx=idx;
+    var img=frames[idx];
+    ctx.clearRect(0,0,W,H);
+    if(img&&img.complete&&img.naturalWidth){
+      var s=Math.max(W/img.naturalWidth,H/img.naturalHeight);
+      ctx.drawImage(img,(W-img.naturalWidth*s)/2,(H-img.naturalHeight*s)/2,img.naturalWidth*s,img.naturalHeight*s);
+    } else {
+      fallback(idx/Math.max(indices.length-1,1));
+    }
+  }
+
+  function fallback(t){
+    var cx=W/2,cy=H/2;
+    ctx.fillStyle='#0B0D10';ctx.fillRect(0,0,W,H);
+    // Grid
+    var ga=t<.4?.1:Math.max(0,.1*(1-(t-.4)/.2));
+    if(ga>.005){
+      ctx.strokeStyle='rgba(90,82,214,'+ga+')';ctx.lineWidth=.5;
+      for(var x=0;x<W;x+=60){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+      for(var y=0;y<H;y+=60){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    }
+    // Monolith
+    if(t>.2){
+      var p=Math.min(1,(t-.2)/.55),e=p*p*(3-2*p);
+      var mw=200*e,mh=340*e;
+      if(mw>2){
+        var grd=ctx.createRadialGradient(cx,cy,0,cx,cy,mw*2.5);
+        grd.addColorStop(0,'rgba(90,82,214,'+(0.15*e)+')');grd.addColorStop(1,'transparent');
+        ctx.fillStyle=grd;ctx.fillRect(cx-mw*2.5,cy-mw*2.5,mw*5,mw*5);
+        ctx.fillStyle='rgba(13,15,22,.97)';ctx.fillRect(cx-mw/2,cy-mh/2,mw,mh);
+        ctx.strokeStyle='rgba(90,82,214,'+(0.85*e)+')';ctx.lineWidth=1.5;
+        ctx.strokeRect(cx-mw/2,cy-mh/2,mw,mh);
+        if(e>.5){
+          ctx.strokeStyle='rgba(90,82,214,'+(0.2*(e-.5)/.5)+')';ctx.lineWidth=.5;
+          for(var ci=1;ci<3;ci++){var xi=cx-mw/2+mw*ci/3;ctx.beginPath();ctx.moveTo(xi,cy-mh/2);ctx.lineTo(xi,cy+mh/2);ctx.stroke();}
+          for(var ri=1;ri<5;ri++){var yi=cy-mh/2+mh*ri/5;ctx.beginPath();ctx.moveTo(cx-mw/2,yi);ctx.lineTo(cx+mw/2,yi);ctx.stroke();}
+        }
+        // Isometric top
+        if(e>.7){
+          var ia=(e-.7)/.3,depth=mw*.28*ia;
+          ctx.strokeStyle='rgba(90,82,214,'+(0.55*ia)+')';ctx.lineWidth=1;
+          ctx.beginPath();ctx.moveTo(cx-mw/2,cy-mh/2);ctx.lineTo(cx-mw/2+depth,cy-mh/2-depth/2);ctx.lineTo(cx+mw/2+depth,cy-mh/2-depth/2);ctx.lineTo(cx+mw/2,cy-mh/2);ctx.stroke();
+          ctx.beginPath();ctx.moveTo(cx+mw/2,cy-mh/2);ctx.lineTo(cx+mw/2+depth,cy-mh/2-depth/2);ctx.stroke();
+        }
+      }
+    }
+    // Pulse
+    if(t>.78){
+      var pt=(t-.78)/.22,r=180+Math.sin(pt*Math.PI*3)*14;
+      ctx.strokeStyle='rgba(90,82,214,'+(pt*.4)+')';ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+      ctx.beginPath();ctx.arc(cx,cy,r*1.35,0,Math.PI*2);ctx.stroke();
+    }
+    // Vignette
+    var vig=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.7);
+    vig.addColorStop(0,'rgba(0,0,0,0)');vig.addColorStop(1,'rgba(0,0,0,.5)');
+    ctx.fillStyle=vig;ctx.fillRect(0,0,W,H);
+  }
+
+  function loadFrame(frameNum,idx){
+    var img=new Image();
+    img.onload=function(){
+      frames[idx]=img;loaded++;
+      setPre(.1+(loaded/indices.length)*.9);
+      if(loaded===indices.length){setTimeout(hidePre,200);ScrollTrigger.refresh();}
+      if(idx===0)draw(0);
+    };
+    img.onerror=function(){
+      loaded++;
+      setPre(.1+(loaded/indices.length)*.9);
+      if(loaded===indices.length){setTimeout(hidePre,200);ScrollTrigger.refresh();}
+    };
+    // Try to load from relative path — works both locally and on GH Pages
+    img.src='seq/frame_'+String(frameNum).padStart(4,'0')+'.webp';
+  }
+
+  resize();
+  window.addEventListener('resize',resize);
+  // Eager load first 30
+  indices.slice(0,30).forEach(function(n,i){loadFrame(n,i);});
+  setTimeout(function(){indices.slice(30).forEach(function(n,i){loadFrame(n,i+30);});},200);
+
+  var headlines=[
+    ['Emerging from the noise','Watch Reframe Core crystallize from raw signal into form.'],
+    ['Lines find their purpose','Every element drawn from chaos, guided by intent.'],
+    ['Structure takes shape','The core geometry resolves — precise, stable, inevitable.'],
+    ['Reframe Core is ready','Your intelligence layer. Versioned, persistent, always on.']
+  ];
+
+  ScrollTrigger.create({
+    trigger:'#core-seq',start:'top top',end:'bottom bottom',
+    pin:'.seq-sticky',anticipatePin:1,scrub:.8,
+    onUpdate:function(self){
+      var idx=Math.min(Math.floor(self.progress*indices.length),indices.length-1);
+      draw(idx);
+      document.getElementById('seqProg').style.width=(self.progress*100)+'%';
+      var hi=Math.min(Math.floor(self.progress*4),3);
+      document.getElementById('seqH').textContent=headlines[hi][0];
+      document.getElementById('seqS').textContent=headlines[hi][1];
+    }
+  });
+})();
+
+// ── Three.js ──────────────────────────────────
+(function(){
+  var canvas=document.getElementById('threeCanvas');
+  var wrap=document.getElementById('three-wrap');
+  if(!canvas||!wrap||typeof THREE==='undefined')return;
+
+  var W=wrap.clientWidth,H=wrap.clientHeight;
+  var renderer=new THREE.WebGLRenderer({canvas:canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));
+  renderer.setSize(W,H);renderer.setClearColor(0,0);
+
+  var scene=new THREE.Scene();
+  var camera=new THREE.PerspectiveCamera(55,W/H,.1,100);
+  camera.position.set(0,0,5);
+
+  var group=new THREE.Group();scene.add(group);
+
+  var box=new THREE.BoxGeometry(1.2,2.0,1.2);
+  group.add(new THREE.Mesh(box,new THREE.MeshStandardMaterial({color:0x0d0f16,metalness:.85,roughness:.15})));
+  group.add(new THREE.Mesh(box,new THREE.MeshBasicMaterial({color:0x5A52D6,wireframe:true,transparent:true,opacity:.3})));
+
+  var rGeo=new THREE.TorusGeometry(1.85,.012,6,80);
+  var ring1=new THREE.Mesh(rGeo,new THREE.MeshBasicMaterial({color:0x5A52D6,transparent:true,opacity:.55}));
+  ring1.rotation.x=Math.PI/2;group.add(ring1);
+  var ring2=new THREE.Mesh(rGeo.clone(),new THREE.MeshBasicMaterial({color:0x8B7FFF,transparent:true,opacity:.28}));
+  ring2.rotation.set(Math.PI/3,0,Math.PI/6);group.add(ring2);
+
+  var pCount=window.innerWidth<768?60:140;
+  var pPos=new Float32Array(pCount*3);
+  for(var i=0;i<pCount*3;i++)pPos[i]=(Math.random()-.5)*9;
+  var pGeo=new THREE.BufferGeometry();
+  pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  scene.add(new THREE.Points(pGeo,new THREE.PointsMaterial({color:0x5A52D6,size:.022,transparent:true,opacity:.65})));
+
+  scene.add(new THREE.AmbientLight(0x1a1a2e,2.5));
+  var pl=new THREE.PointLight(0x5A52D6,5,9);pl.position.set(2,2,2);scene.add(pl);
+  var pl2=new THREE.PointLight(0x8B7FFF,2.5,7);pl2.position.set(-2,-1,1);scene.add(pl2);
+
+  var vis=false,raf=null,t=0,sp=0,mx=0,my=0,tx=0,ty=0;
+
+  new IntersectionObserver(function(e){
+    vis=e[0].isIntersecting;
+    vis?start():stop();
+  },{threshold:.05}).observe(wrap);
+
+  window.addEventListener('mousemove',function(e){
+    tx=(e.clientX/window.innerWidth-.5)*2;
+    ty=-(e.clientY/window.innerHeight-.5)*2;
+  });
+  window.addEventListener('resize',function(){
+    W=wrap.clientWidth;H=wrap.clientHeight;
+    camera.aspect=W/H;camera.updateProjectionMatrix();
+    renderer.setSize(W,H);
+  });
+
+  function loop(){
+    if(!vis)return;
+    raf=requestAnimationFrame(loop);t+=.008;
+    mx+=(tx-mx)*.05;my+=(ty-my)*.05;
+    group.rotation.y=sp*Math.PI*2+t*.28;
+    group.rotation.x=sp*.4+Math.sin(t)*.04;
+    group.position.x=mx*.3;group.position.y=my*.2;
+    ring1.rotation.y+=.005;ring2.rotation.z+=.003;
+    ring1.material.opacity=.45+Math.sin(t*1.4)*.1;
+    camera.position.z=5-sp*1.5;
+    renderer.render(scene,camera);
+  }
+  function start(){if(!raf)loop();}
+  function stop(){if(raf){cancelAnimationFrame(raf);raf=null;}}
+
+  ScrollTrigger.create({trigger:'#three-sec',start:'top bottom',end:'bottom top',scrub:true,onUpdate:function(s){sp=s.progress;}});
+  gsap.from('.three-panel',{opacity:0,x:60,scrollTrigger:{trigger:'.three-panel',start:'top 80%',end:'top 40%',scrub:true}});
+})();
+
+// ── CTA ───────────────────────────────────────
+gsap.from('.cta-wrap>*',{opacity:0,y:30,stagger:.1,scrollTrigger:{trigger:'#contact',start:'top 70%',end:'top 30%',scrub:true}});
+
+// ── Form ──────────────────────────────────────
+document.getElementById('cform').addEventListener('submit',async function(e){
+  e.preventDefault();
+  var btn=this.querySelector('.btn-sub');
+  var st=document.getElementById('fstatus');
+  btn.textContent='Sending...';btn.style.opacity='.7';
+  try{
+    var r=await fetch(this.action,{method:'POST',body:new FormData(this),headers:{Accept:'application/json'}});
+    st.textContent=r.ok?'Received! We will be in touch.':'Something went wrong. Email hello@getreframe.co.za';
+    if(r.ok)this.reset();
+  }catch(err){st.textContent='Network error. Email hello@getreframe.co.za';}
+  btn.textContent='Request Access →';btn.style.opacity='1';
+});
+</script>
 </body>
 </html>
