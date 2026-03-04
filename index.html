@@ -88,8 +88,9 @@ h1 .ac{color:var(--accent)}
 /* STACK */
 #stack{position:relative;background:var(--bg)}
 .stack-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:400vh}
-.stack-left{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
-.card{position:absolute;top:50%;left:50%;translate:-50% -50%;width:min(420px,calc(100% - 80px));background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s,border-color .5s,box-shadow .5s}
+.stack-left{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;overflow:hidden}
+.cards-wrap{position:relative;width:min(420px,calc(100% - 80px));height:280px}
+.card{position:absolute;top:0;left:0;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:opacity .5s,border-color .5s,box-shadow .5s}
 /* Default layered positions — always visible */
 .card[data-l="0"]{transform:translateY(54px) scale(.93);opacity:.3;z-index:1}
 .card[data-l="1"]{transform:translateY(36px) scale(.96);opacity:.5;z-index:2}
@@ -291,7 +292,8 @@ footer{border-top:1px solid var(--border);padding:32px}
 <!-- STACK -->
 <section id="stack">
   <div class="stack-wrap">
-    <div class="stack-left" id="stackLeft">
+ <div class="stack-left" id="stackLeft">
+  <div class="cards-wrap">
       <!-- Card 0: Terminal -->
       <div class="card" data-l="0">
         <div class="chrome"><div class="dots"><span></span><span></span><span></span></div><span class="wtitle">reframe/terminal</span></div>
@@ -342,7 +344,8 @@ footer{border-top:1px solid var(--border);padding:32px}
           <p class="small">Orchestrate multi-agent workflows with built-in error recovery, observability, and human-in-the-loop gates.</p>
         </div>
       </div>
-    </div>
+  </div>
+</div>
     <div class="stack-right">
       <div class="step on" data-s="0">
         <div class="step-n">01</div>
