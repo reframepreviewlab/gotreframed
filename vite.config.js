@@ -4,10 +4,7 @@ export default defineConfig({
   base: '/gotreframed/',
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
-    rollupOptions: {
-      input: { main: 'index.html' }
-    }
+    assetsDir: 'assets'
   },
   server: { port: 5173 }
 })

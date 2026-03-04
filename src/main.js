@@ -2,6 +2,7 @@
  * Reframe — main entry
  * Orchestrates preloader, GSAP sections, sequence player, Three.js
  */
+import './styles.css'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import {
@@ -17,8 +18,6 @@ import { SequencePlayer } from './sequence.js'
 import { initThreeScene } from './three-scene.js'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const BASE = import.meta.env.BASE_URL
 
 // ============================================================ Noise canvas
 function drawNoise(canvas) {
@@ -83,15 +82,15 @@ function initContactForm() {
         headers: { Accept: 'application/json' }
       })
       if (res.ok) {
-        status.textContent = "✓ Received! We'll be in touch shortly."
+        status.textContent = "Received! We will be in touch shortly."
         form.reset()
       } else {
-        status.textContent = 'Something went wrong. Email us directly at hello@getreframe.co.za'
+        status.textContent = 'Something went wrong. Email us at hello@getreframe.co.za'
       }
     } catch {
       status.textContent = 'Network error. Email us at hello@getreframe.co.za'
     }
-    btn.textContent = 'Request Access →'
+    btn.textContent = 'Request Access'
     btn.style.opacity = '1'
   })
 }
@@ -108,7 +107,7 @@ async function bootstrap() {
   // Init contact form
   initContactForm()
 
-  // Init hero parallax (can run before sequence loads)
+  // Init hero parallax
   initHeroParallax()
 
   // Init stack
@@ -134,7 +133,7 @@ async function bootstrap() {
     }
   }
 
-  // Init sequence player with progress callback
+  // Init sequence player
   const seqCanvas = document.getElementById('sequenceCanvas')
   if (seqCanvas) {
     const player = new SequencePlayer(seqCanvas, {
@@ -149,21 +148,17 @@ async function bootstrap() {
     })
 
     initSequenceSection(player)
-
-    // Fallback: hide preloader after 6s even if assets slow
-    setTimeout(() => {
-      hidePreloader()
-      refreshAll()
-    }, 6000)
-  } else {
-    // No canvas — hide preloader immediately
-    setTimeout(hidePreloader, 800)
   }
 
-  // Initial preloader pulse
+  // Always hide preloader after 4s max regardless of asset loading
+  setTimeout(() => {
+    hidePreloader()
+    refreshAll()
+  }, 4000)
+
   updatePreloader(0.05)
 
-  // Animate pipeline node on stack focus change
+  // Animate pipeline
   ScrollTrigger.create({
     trigger: '#stackCard1',
     start: 'top 60%',
@@ -181,5 +176,4 @@ function animatePipeline() {
   })
 }
 
-// Wait for DOM
 document.addEventListener('DOMContentLoaded', bootstrap)
