@@ -88,7 +88,7 @@ h1 .ac{color:var(--accent)}
 /* STACK */
 #stack{position:relative;background:var(--bg)}
 .stack-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:400vh}
-.stack-left{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;overflow:hidden}
+.stack-left{position:sticky!important;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px;overflow:hidden}
 .cards-wrap{position:relative;width:min(420px,calc(100% - 80px));height:280px}
 .card{position:absolute;top:0;left:0;width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:opacity .5s,border-color .5s,box-shadow .5s}
 /* Default layered positions — always visible */
@@ -210,7 +210,7 @@ footer{border-top:1px solid var(--border);padding:32px}
 
 @media(max-width:768px){
   .stack-wrap{grid-template-columns:1fr}
-  .stack-left{height:65vh;position:relative}
+  .stack-left{height:65vh}
   .stack-right{padding:20px 24px 80px}
   .step{min-height:auto;padding:60px 0}
   .frow{grid-template-columns:1fr}
