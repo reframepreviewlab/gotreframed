@@ -89,7 +89,7 @@ h1 .ac{color:var(--accent)}
 #stack{position:relative;background:var(--bg)}
 .stack-wrap{display:grid;grid-template-columns:1fr 1fr;min-height:400vh}
 .stack-left{position:sticky;top:0;height:100vh;display:flex;align-items:center;justify-content:center;padding:40px}
-.card{position:absolute;width:min(420px,calc(100% - 80px));background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s,border-color .5s,box-shadow .5s}
+.card{position:absolute;top:50%;left:50%;translate:-50% -50%;width:min(420px,calc(100% - 80px));background:var(--bg3);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s,border-color .5s,box-shadow .5s}
 /* Default layered positions — always visible */
 .card[data-l="0"]{transform:translateY(54px) scale(.93);opacity:.3;z-index:1}
 .card[data-l="1"]{transform:translateY(36px) scale(.96);opacity:.5;z-index:2}
